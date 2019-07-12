@@ -39,9 +39,9 @@ const unsigned int KO[120]={0x30,  0x31,  0x32,  0x33,  0x34,  0x35,  0x36,  0x3
                             0x30C, 0x50B, 0x112, 0x40,  0x30,  0x30,  0x30,  0x30,
                             0x11E, 0x2B,  0x4106,  0x4107,  0x30,  0x30,  0x30,  0x30};       //ps2 code array
 
-const unsigned int BRK[15]={24544, 65506 ,32740 ,24550 ,32744 ,24554 ,24556 ,32750 ,
-                            32752, 24562, 57332, 32758, 24568, 32762, 32764};                 //break code array
-char a=0,p=0;
+const unsigned int BRK[15]={0xDFE0, 0xFFE2 ,0xFFE4 ,0xDFE6 ,0xFFE8 ,0xDFEA ,0xDFEC ,0xFFEE ,
+                            0xFFF0, 0xDFF2, 0xDFF4, 0xFFF6, 0xDFF8, 0xFFFA, 0xFFFC};                 //break code array
+char a=0,p=0,q=0;
 bool brkflag=0;
 void SENDKEY(int bitvar)       //key sending func
 {
@@ -52,30 +52,30 @@ void SENDKEY(int bitvar)       //key sending func
   OCR1A = 768;                          // set compare match register to desired timer count:
   TCCR1B |= (1 << WGM12);               // turn on CTC mode: 
   TIMSK1 |= (1 << OCIE1A);              // enable timer compare interrupt:
-  TCCR1B |= (1 << CS10);                // Set 1/8 mode  
-  while(a<14)                           //wait the sending finish
+  TCCR1B |= (1 << CS10);                // Set  mode  
+  while(a<15)                           //wait the sending finish
   {
     digitalWrite(LED_BUILTIN, HIGH);    //light up the LED when sending
-    delay(20);
+    //delay(3);
     digitalWrite(LED_BUILTIN, LOW);
-    delay(20);
+    //delay(3);
   }
-  
   TCCR1B &= ~(1 << CS10);    //stop the timer clock
   TIMSK1 &= ~(1 << OCIE1A);  //stop the timer interrupt
+  delay(40);                 //source of high latency, dont know why ;(    if dont wait >=35ms , lost keys when quick typing
 }
 
 ISR(TIMER1_COMPA_vect) //ISR func
-{ if(a<15)
-  {
+{ 
+  
     digitalWrite(TXPIN,bitRead(buff,a));//send 1bit
     a++;
-  }
+  
 }
 
 void keytest()
 {
-  int j=0,k=0;
+  char j=0,k=0;
   for(k=0;k<15;k++)              //send every keycode
   {
     for(j=0;j<8;j++)
@@ -92,6 +92,21 @@ void setup() {
   keyboard.begin( DATAPIN, IRQPIN );  //PS2Keyboard service
   pinMode(TXPIN,OUTPUT);              //Tx pin init
   digitalWrite(TXPIN, HIGH);
+  SENDKEY(BRK[0]);                    //reset fix freezing
+  SENDKEY(BRK[1]);
+  SENDKEY(BRK[2]);
+  SENDKEY(BRK[3]);
+  SENDKEY(BRK[4]);
+  SENDKEY(BRK[5]);
+  SENDKEY(BRK[6]);
+  SENDKEY(BRK[7]);
+  SENDKEY(BRK[8]);
+  SENDKEY(BRK[9]);
+  SENDKEY(BRK[10]);
+  SENDKEY(BRK[11]);
+  SENDKEY(BRK[12]);
+  SENDKEY(BRK[13]);
+  SENDKEY(BRK[14]);
 }
 
 
@@ -190,6 +205,8 @@ void loop() {
      }
     }
   }
+
+  
 }
 
 
