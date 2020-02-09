@@ -49,20 +49,20 @@ void SENDKEY(int bitvar)       //key sending func
   buff=bitvar;  //load keycode
   TCCR1A = 0;  // set Timer register to 0
   TCCR1B = 0;  
-  OCR1A = 768;                          // set compare match register to desired timer count:
+  OCR1A = 763;                          // 768 in theory,acutually 763 is the best
   TCCR1B |= (1 << WGM12);               // turn on CTC mode: 
   TIMSK1 |= (1 << OCIE1A);              // enable timer compare interrupt:
   TCCR1B |= (1 << CS10);                // Set  mode  
   while(a<15)                           //wait the sending finish
   {
     digitalWrite(LED_BUILTIN, HIGH);    //light up the LED when sending
-    //delay(3);
     digitalWrite(LED_BUILTIN, LOW);
-    //delay(3);
+ 
   }
   TCCR1B &= ~(1 << CS10);    //stop the timer clock
   TIMSK1 &= ~(1 << OCIE1A);  //stop the timer interrupt
-  delay(40);                 //source of high latency, dont know why ;(    if dont wait >=35ms , lost keys when quick typing
+  delay(36);                 //slightly high input latency when fast typing,
+                             //but codes with the same row number must be sent after 35ms , dont know why
 }
 
 ISR(TIMER1_COMPA_vect) //ISR func
@@ -73,20 +73,7 @@ ISR(TIMER1_COMPA_vect) //ISR func
   
 }
 
-void keytest()
-{
-  char j=0,k=0;
-  for(k=0;k<15;k++)              //send every keycode
-  {
-    for(j=0;j<8;j++)
-    {
-      SENDKEY(K[j+(k*8)]);
-      delay(5);
-      SENDKEY(BRK[k]);
-      delay(20);
-    }
-  }
-}
+
 
 void setup() {
   keyboard.begin( DATAPIN, IRQPIN );  //PS2Keyboard service
