@@ -14,6 +14,10 @@ Need PS2keyAdvanced library.
 |CLK|D3||
 |GND|GND|GND|
 
+PC-88MA side pinout:
+
+![avatar](http://www.maroon.dti.ne.jp/youkan/pc88/kbd2.gif)
+
 # Usage
 
 Just buy a Arduino Nano, upload the codes, connect the cables as above. :)
