@@ -1,6 +1,8 @@
 # PS288MF
 
-A simple Arduino-based PS/2 to PC-8801M/F keyboard adapter.
+A simple Arduino-based PS/2 to PC-8801F/M keyboard adapter.
+
+PC-8801FH以降用のPS2キーボードアダプター 
 
 Need PS2keyAdvanced library.
 
