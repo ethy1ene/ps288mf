@@ -6,8 +6,6 @@ PC-8801FH以降用のPS2キーボードアダプター
 
 Need PS2keyAdvanced library.
 
-NOTICE:Currently Not Working: Shift + Num
-
 # Default pinout
 
 |PS/2 keyboard|Arduino|PC-8801 host|
